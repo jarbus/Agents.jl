@@ -34,7 +34,7 @@ function initalize_model(map_url)
     walker = Walker(1, (1, 4))
     add_agent_pos!(walker, model)
     ## The walker's movement target is the end of the maze.
-    plan_route!(walker, (41, 32), pathfinder)
+    set_target!(walker, (41, 32), pathfinder)
 
     return model, pathfinder
 end

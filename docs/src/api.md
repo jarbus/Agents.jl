@@ -57,12 +57,10 @@ get_direction
 
 
 ### Movement with paths
-For [`OpenStreetMapSpace`](@ref), and [`GridSpace`](@ref)/[`ContinuousSpace`](@ref) using [`Pathfinding.Pathfinder`](@ref), a special
+For [`OpenStreetMapSpace`](@ref), and [`GridSpace`](@ref)s using [`Pathfinding.Pathfinder`](@ref), a special
 movement method is available.
 
 ```@docs
-plan_route!
-plan_best_route!
 move_along_route!
 is_stationary
 ```
@@ -111,9 +109,10 @@ OSM.latlon
 OSM.intersection
 OSM.road
 OSM.random_road_position
+OSM.plan_route
 OSM.random_route!
 OSM.road_length
-OSM.test_map
+OSM.map_coordinates
 ```
 
 ## Local area
@@ -273,6 +272,8 @@ To use the `parallel=true` option of [`ensemblerun!`](@ref) you need to load `Ag
 ```@docs
 Pathfinding
 Pathfinding.AStar
+Pathfinding.set_target!
+Pathfinding.set_best_target!
 Pathfinding.penaltymap
 Pathfinding.nearby_walkable
 Pathfinding.random_walkable

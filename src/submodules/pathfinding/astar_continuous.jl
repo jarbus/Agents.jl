@@ -54,19 +54,19 @@ function find_continuous_path(
     return cts_path
 end
 
-function Agents.plan_route!(
+function set_target!(
     agent::A,
-    dest::NTuple{D,Float64},
+    target::NTuple{D,Float64},
     pathfinder::AStar{D,P,M,Float64},
 ) where {A<:AbstractAgent,D,P,M}
-    path = find_continuous_path(pathfinder, agent.pos, dest)
+    path = find_continuous_path(pathfinder, agent.pos, target)
     isnothing(path) && return
     pathfinder.agent_paths[agent.id] = path
 end
 
-function Agents.plan_best_route!(
+function set_best_target!(
     agent::A,
-    dests,
+    targets,
     pathfinder::AStar{D,P,M,Float64};
     condition::Symbol = :shortest,
 ) where {A<:AbstractAgent,D,P,M}
@@ -74,7 +74,7 @@ function Agents.plan_best_route!(
     compare = condition == :shortest ? (a, b) -> a < b : (a, b) -> a > b
     best_path = Path{D,Float64}()
     best_target = nothing
-    for target in dests
+    for target in targets
         path = find_continuous_path(pathfinder, agent.pos, target)
         isnothing(path) && continue
         if isempty(best_path) || compare(length(path), length(best_path))
@@ -89,9 +89,9 @@ function Agents.plan_best_route!(
 end
 
 """
-    move_along_route!(agent, model::ABM{<:ContinuousSpace{D}}, pathfinder::AStar{D}, speed, dt = 1.0)
+    Pathfinding.move_along_route!(agent, model::ABM{<:ContinuousSpace{D}}, pathfinder::AStar{D}, speed, dt = 1.0)
 Move `agent` for one step along the route toward its target set by
-[`plan_route!`](@ref) at the given `speed` and timestep `dt`.
+[`Pathfinding.set_target!`](@ref) at the given `speed` and timestep `dt`.
 
 For pathfinding in models with [`ContinuousSpace`](@ref)
 

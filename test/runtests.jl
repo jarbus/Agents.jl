@@ -69,6 +69,8 @@ end
 mutable struct Agent10 <: AbstractAgent
     id::Int
     pos::Tuple{Int,Int,Float64}
+    route::Vector{Int}
+    destination::Tuple{Int,Int,Float64}
 end
 
 @testset "Agents.jl Tests" begin

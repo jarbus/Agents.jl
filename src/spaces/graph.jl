@@ -50,11 +50,14 @@ end
 function move_agent!(
     agent::A,
     pos::ValidPos,
-    model::ABM{<:GraphSpace,A}
+    model::ABM{<:GraphSpace,A},
 ) where {A <: AbstractAgent}
-    remove_agent_from_space!(agent, model)
+    oldpos = agent.pos
+    ids = ids_in_position(oldpos, model)
+    splice!(ids, findfirst(a -> a == agent.id, ids))
     agent.pos = pos
-    add_agent_to_space!(agent, model)
+    push!(ids_in_position(agent.pos, model), agent.id)
+    return agent
 end
 
 function add_agent_to_space!(

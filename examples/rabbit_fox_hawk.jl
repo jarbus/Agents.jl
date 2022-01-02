@@ -237,7 +237,7 @@ function rabbit_step!(rabbit, model)
             position = rabbit.pos .+ direction .* (model.rabbit_vision / 2.)
             chosen_position = random_walkable(position, model, model.landfinder, model.rabbit_vision / 2.)
         end
-        plan_route!(rabbit, chosen_position, model.landfinder)
+        set_target!(rabbit, chosen_position, model.landfinder)
     end
 
     ## Reproduce with a random probability, scaling according to the time passed each
@@ -246,7 +246,7 @@ function rabbit_step!(rabbit, model)
 
     ## If the rabbit isn't already moving somewhere, move to a random spot
     if is_stationary(rabbit, model.landfinder)
-        plan_route!(
+        set_target!(
             rabbit,
             random_walkable(rabbit.pos, model, model.landfinder, model.rabbit_vision),
             model.landfinder
@@ -286,7 +286,7 @@ function fox_step!(fox, model)
         prey = [x for x in nearby_agents(fox, model, model.fox_vision) if x.type == :rabbit]
         if isempty(prey)
             ## Move anywhere if no rabbits were found
-            plan_route!(
+            set_target!(
                 fox,
                 random_walkable(fox.pos, model, model.landfinder, model.fox_vision),
                 model.landfinder,
@@ -294,7 +294,7 @@ function fox_step!(fox, model)
             return
         end
         ## Move toward a random rabbit
-        plan_route!(fox, rand(model.rng, map(x -> x.pos, prey)), model.landfinder)
+        set_target!(fox, rand(model.rng, map(x -> x.pos, prey)), model.landfinder)
     end
 
     move_along_route!(fox, model, model.landfinder, model.fox_speed, model.dt)
@@ -311,7 +311,7 @@ function hawk_step!(hawk, model)
         kill_agent!(rand(model.rng, food), model, model.airfinder)
         hawk.energy += model.Δe_rabbit
         ## Fly back up
-        plan_route!(hawk, hawk.pos .+ (0., 0., 7.), model.airfinder)
+        set_target!(hawk, hawk.pos .+ (0., 0., 7.), model.airfinder)
     end
 
     ## The rest of the stepping function is similar to that of foxes, except hawks use a
@@ -327,13 +327,13 @@ function hawk_step!(hawk, model)
     if is_stationary(hawk, model.airfinder)
         prey = [x for x in nearby_agents(hawk, model, model.hawk_vision) if x.type == :rabbit]
         if isempty(prey)
-            plan_route!(
+            set_target!(
                 hawk,
                 random_walkable(hawk.pos, model, model.airfinder, model.hawk_vision),
                 model.airfinder,
             )
         else
-            plan_route!(hawk, rand(model.rng, map(x -> x.pos, prey)), model.airfinder)
+            set_target!(hawk, rand(model.rng, map(x -> x.pos, prey)), model.airfinder)
         end
     end
 
